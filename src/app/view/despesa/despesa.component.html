@@ -1,0 +1,12 @@
+<p-panel header="Despesa">
+    <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+    <app-despesa-form [tiposDespesa]="tiposDespesa"
+                      [loading]="loading"
+                      [formasPagamento]="formasPagamento"
+                      [fornecedores]="fornecedores"></app-despesa-form>
+    <app-despesa-list [tiposDespesa]="tiposDespesa"
+                      [formasPagamento]="formasPagamento"
+                      [fornecedores]="fornecedores"></app-despesa-list>
+</p-panel>
+
+

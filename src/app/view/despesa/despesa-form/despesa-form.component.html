@@ -1,0 +1,81 @@
+<form [formGroup]="despesaform" (ngSubmit)="onSubmit(despesaform.value)">
+  <div class="display-table" >
+    <div>
+      <div>Tipo:</div>
+      <div>
+        <p-dropdown [options]="tiposDespesa"
+                    optionLabel="nome"
+                    [filter]="true"
+                    formControlName="comboTipoDespesa"
+                    (onChange)="despesaCadastro.tipoDespesa = $event.value"
+                    scrollHeight="250"
+                    [style]="{'width':'200px'}">
+        </p-dropdown>
+      </div>
+      <div>Fornecedor: </div>
+      <div><p-autoComplete [suggestions]="fornecedores"
+                        (completeMethod)="filterFornecedor($event)"
+                        formControlName="autoCompleteFornecedor"
+                        field="nome"
+                        [inputStyle]="{'width': '500px'}"
+                        [forceSelection]="true"
+                        scrollHeight="400px"
+                        [style]="{'width': '600px'}"
+                        [minLength]="1">
+          <ng-template let-value pTemplate="selectedItem">
+            <span>>{{value}}</span>
+          </ng-template>
+          <ng-template let-brand pTemplate="item">
+            <span style="font-size:12px;">{{brand.nome}}</span>
+            <span style="float: right;">{{brand.cidade.nome + ' - ' + brand.cidade.estado.value}}</span>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+    </div>
+    <div>
+      <div>Data: </div>
+      <div>
+        <p-inputMask mask="99/99/9999"
+                     placeholder="99/99/9999"
+                     slotChar="dd/mm/yyyy"
+                     formControlName="inputData"
+                     [style]="{'width':'100%'}">
+        </p-inputMask>
+        <p-message severity="error" text="Data obrigatória"
+                   *ngIf="!despesaform.controls['inputData'].valid && despesaform.controls['inputData'].dirty">
+        </p-message>
+      </div>
+      <div>Pagamento: </div>
+      <div>
+        <p-dropdown [options]="formasPagamento"
+                    optionLabel="nome"
+                    [filter]="true"
+                    formControlName="comboFormaPagamento"
+                    (onChange)="despesaCadastro.tipoDespesa = $event.value"
+                    scrollHeight="250"
+                    [style]="{'width':'200px'}">
+        </p-dropdown>
+      </div>
+    </div>
+    <div>
+      <div>Valor: </div>
+      <div>
+        <input type="text"
+               (keyup)="maskaraMoeda($event)"
+               pInputText style="width: 100%"
+               formControlName="inputValor" />
+        <p-message severity="error" text="Valor obrigatório"
+                   *ngIf="!despesaform.controls['inputValor'].valid && despesaform.controls['inputValor'].dirty">
+        </p-message>
+      </div>
+      <div>Obs: </div>
+      <div>
+        <input type="text" pInputText style="width: 500px" formControlName="inputObservacao"/>
+      </div>
+      <div style="vertical-align: bottom;">
+        <p-button type="Submit" label="Salvar" icon="pi pi-save"
+                  [style]="{'width': '100px'}" [disabled]="!despesaform.valid"></p-button>
+      </div>
+    </div>
+  </div>
+</form>
