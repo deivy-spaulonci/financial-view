@@ -1,0 +1,44 @@
+<p-toast [style]="{marginTop: '80px'}" position="top-center"></p-toast>
+
+<p-table [value]="fornecedores"
+         [columns]="cols"
+         [loading]="loading"
+         [lazy]="true"
+         (onLazyLoad)="loadData($event)"
+         [rowsPerPageOptions]="[10,15,20,25,30,40]"
+         [alwaysShowPaginator]="true"
+         [paginator]="true"
+         [showCurrentPageReport]="true"
+         [totalRecords]="totalElements"
+         [rows]="pageSize"
+         [style]="{'width': '1050px'}"
+         sortField="nome"
+         currentPageReportTemplate="Mostrando {first} a {last} de {{totalElements}} fornecedores"
+         dataKey="id" #dt
+         styleClass="p-datatable-striped p-datatable-gridlines"
+         [(contextMenuSelection)]="fornecedorSelecionado">
+  <ng-template pTemplate="header">
+    <tr>
+      <th *ngFor="let col of cols" [pSortableColumn]="col.field"
+          [ngStyle]="{'width': col.width, 'text-align': 'center'}">
+        <!--        filtro id-->
+        <p-columnFilter type="text" [field]="col.field" display="menu" style="float: left" [showMatchModes]="false"
+                        [showOperator]="false" [showAddButton]="false" pKeyFilter="int" [useGrouping]="true">
+        </p-columnFilter>
+
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-fornecedor let-expanded="expanded" let-ri="rowIndex">
+    <tr>
+      <td style="text-align: center;">{{fornecedor.id}}</td>
+      <td>{{fornecedor.nome}} <span style="float: right; color:cadetblue;">{{fornecedor.razaoSocial | slice:0:30}}...</span></td>
+      <td style="text-align: center;">{{fornecedor.cnpj | cnpj}}</td>
+      <td>{{fornecedor.cidade.nome}} - {{fornecedor.cidade.estado.value}}</td>
+    </tr>
+  </ng-template>
+</p-table>
+<app-loading [loading]="loading"></app-loading>

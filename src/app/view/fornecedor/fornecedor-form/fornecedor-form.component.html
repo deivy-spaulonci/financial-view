@@ -1,0 +1,35 @@
+<form [formGroup]="fornecedorform" (ngSubmit)="onSubmit(fornecedorform.value)">
+  <div class="display-table" >
+    <div>
+      <div>CNPJ: </div>
+      <div>
+        <div class="p-inputgroup">
+          <p-inputMask mask="99.999.999/9999-99" [style]="{'width':'150px'}" formControlName="inputCNPJ"
+                       class="capitalize"></p-inputMask>
+          <button type="button" pButton icon="pi pi-globe" styleClass="p-button-warn" (click)="buscaCnpj($event)" ></button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div>Nome:</div>
+      <div><input type="text" pInputText [style]="{'width':'400px'}" formControlName="inputNome"/></div>
+    </div>
+    <div>
+      <div>Razão Social:</div>
+      <div><input type="text" pInputText [style]="{'width':'400px'}" formControlName="inputRazaoSocial"/></div>
+    </div>
+    <div>
+      <div>Cidade:</div>
+      <div>
+        <p-autoComplete [suggestions]="filteredCidades" (completeMethod)="filterCidades($event)" [forceSelection]="true"
+                        formControlName="comboCidade" [style]="{'width':'250px'}"  field="nome"
+                        [virtualScroll]="true" [inputStyle]="{'width': '250px'}"></p-autoComplete>
+      </div>
+      <div style="vertical-align: bottom;">
+        <p-button type="Submit" label="Salvar" icon="pi pi-save"
+                  [style]="{'width': '100px'}" [disabled]="!fornecedorform.valid"></p-button>
+      </div>
+    </div>
+  </div>
+</form>
+<app-loading [loading]="loading"></app-loading>
