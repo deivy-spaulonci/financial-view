@@ -3,10 +3,12 @@
     <app-despesa-form [tiposDespesa]="tiposDespesa"
                       [loading]="loading"
                       [formasPagamento]="formasPagamento"
-                      [fornecedores]="fornecedores"></app-despesa-form>
+                      [fornecedores]="fornecedores"
+                      (refreshTable)="loadTable($event)"></app-despesa-form>
     <app-despesa-list [tiposDespesa]="tiposDespesa"
                       [formasPagamento]="formasPagamento"
-                      [fornecedores]="fornecedores"></app-despesa-list>
+                      [fornecedores]="fornecedores"
+                      #listDespesa></app-despesa-list>
 </p-panel>
 
 

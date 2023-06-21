@@ -44,6 +44,9 @@ import { FornecedorComponent } from './view/fornecedor/fornecedor.component';
 import { FornecedorFormComponent } from './view/fornecedor/fornecedor-form/fornecedor-form.component';
 import { FornecedorListComponent } from './view/fornecedor/fornecedor-list/fornecedor-list.component';
 import { CnpjPipe } from './pipe/cnpj.pipe';
+import { ContaComponent } from './view/conta/conta.component';
+import { ContaListComponent } from './view/conta/conta-list/conta-list.component';
+import { ContaFormComponent } from './view/conta/conta-form/conta-form.component';
 
 registerLocaleData(localept, 'pt');
 
@@ -59,6 +62,9 @@ registerLocaleData(localept, 'pt');
     FornecedorListComponent,
     CnpjPipe,
     LoadingComponent,
+    ContaComponent,
+    ContaListComponent,
+    ContaFormComponent,
   ],
   imports: [
     BrowserModule,

@@ -23,7 +23,18 @@
           [ngStyle]="{'width': col.width, 'text-align': 'center'}">
         <!--        filtro id-->
         <p-columnFilter type="text" [field]="col.field" display="menu" style="float: left" [showMatchModes]="false"
-                        [showOperator]="false" [showAddButton]="false" pKeyFilter="int" [useGrouping]="true">
+                        *ngIf="col.field!='cidade'" [showOperator]="false" [showAddButton]="false" pKeyFilter="int"
+                        [useGrouping]="true">
+        </p-columnFilter>
+
+        <p-columnFilter [field]="col.field" display="menu" [showMatchModes]="false" style="float: left"
+                        [showOperator]="false" [showAddButton]="false"
+                        *ngIf="['cidade'].includes(col.field)"
+                        [showApplyButton]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown [options]="cidadesFiltro" placeholder="todos" optionLabel="nome" [filter]="true"
+                        (onChange)="filter($event.value)" *ngIf="col.field=='cidade'"></p-dropdown>
+          </ng-template>
         </p-columnFilter>
 
         {{col.header}}

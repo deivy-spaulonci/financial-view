@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, ViewChild} from '@angular/core';
 import {DefaultService} from "../../../service/default.service";
 import {Despesa} from "../../../model/despesa";
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
-import {TableLazyLoadEvent} from "primeng/table";
+import {Table, TableLazyLoadEvent} from "primeng/table";
 import {TipoDespesa} from "../../../model/tipo-despesa";
 import {Fornecedor} from "../../../model/fornecedor";
 import {FormaPagamento} from "../../../model/forma-pagamento";
@@ -18,6 +18,8 @@ export class DespesaListComponent implements OnInit {
   @Input() tiposDespesa:TipoDespesa[]= [];
   @Input() fornecedores:Fornecedor[]= [];
   @Input() formasPagamento:FormaPagamento[]= [];
+
+  @ViewChild('dt') table?:Table;
 
   despesas:Despesa[] = [];
   despesaSelecionada!:Despesa;
@@ -53,6 +55,10 @@ export class DespesaListComponent implements OnInit {
       // {label: 'Editar', icon: 'pi pi-fw pi-pencil',
       //   command: () => this.editarDespesa() }
     ];
+  }
+
+  refresTable(){
+    this.table?._filter();
   }
 
   loadData(event: TableLazyLoadEvent) {
@@ -100,6 +106,9 @@ export class DespesaListComponent implements OnInit {
       this.totalElements = resultado.totalElements;
 
       this.loading = false;
+      this.defaultService.get('despesa/valorTotal?' + urlfiltros).subscribe(somatotal => {
+        this.totalValor = somatotal;
+      });
     });
   }
 

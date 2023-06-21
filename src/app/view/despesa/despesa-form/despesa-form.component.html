@@ -1,3 +1,5 @@
+<p-toast [style]="{marginTop: '80px'}" position="top-center"></p-toast>
+
 <form [formGroup]="despesaform" (ngSubmit)="onSubmit(despesaform.value)">
   <div class="display-table" >
     <div>
@@ -51,7 +53,7 @@
                     optionLabel="nome"
                     [filter]="true"
                     formControlName="comboFormaPagamento"
-                    (onChange)="despesaCadastro.tipoDespesa = $event.value"
+                    (onChange)="despesaCadastro.formaPagamento = $event.value"
                     scrollHeight="250"
                     [style]="{'width':'200px'}">
         </p-dropdown>

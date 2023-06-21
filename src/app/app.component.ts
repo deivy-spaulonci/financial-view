@@ -18,13 +18,14 @@ export class AppComponent implements OnInit{
       { label: 'Home', icon: 'pi pi-fw pi-home', routerLink: '/'},
       { label: 'Despesa', icon: 'pi pi-fw pi-dollar', routerLink: '/despesa'},
       { label: 'Fornecedor', icon: 'pi pi-fw pi-box', routerLink: '/fornecedor' },
-      { label: 'Contas', icon: 'pi pi-fw pi-credit-card' }
+      { label: 'Contas', icon: 'pi pi-fw pi-credit-card', routerLink: '/conta' }
     ];
 
     this.config.setTranslation({
       accept: 'Aceitar',
       reject: 'Cancelar',
-      clear: 'Limpar'
+      clear: 'Limpar',
+      emptyMessage: 'Nenhum registro encontrado!'
       //translations
     });
   }

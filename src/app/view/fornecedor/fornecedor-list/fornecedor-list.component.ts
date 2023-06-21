@@ -15,7 +15,7 @@ export class FornecedorListComponent implements OnInit{
   fornecedorSelecionado!: Fornecedor;
   cols!: any[];
   fornecedores!: any[];
-  cidades!: any[];
+  cidadesFiltro!: any[];
   loading:boolean=false;
   // tabela
   pageNumber = 0;
@@ -33,6 +33,10 @@ export class FornecedorListComponent implements OnInit{
       {field: 'cnpj', header: 'CNPJ', width: '170px'},
       {field: 'cidade', header: 'Cidade', width: '200px'},
     ];
+
+    this.defaultService.get("fornecedor/cidadesFornecedor").subscribe(resultado => {
+        this.cidadesFiltro = resultado;
+    });
   }
 
   loadData(event: TableLazyLoadEvent) {
@@ -52,7 +56,7 @@ export class FornecedorListComponent implements OnInit{
         urlfiltros += '&cnpj=' + filtros.cnpj[0].value;
       }
       if (filtros.cidade && filtros.cidade[0].value) {
-        urlfiltros += '&cidade.nome=' + filtros.cidade[0].value;
+        urlfiltros += '&cidade.id=' + filtros.cidade[0].value.id;
       }
     }
 

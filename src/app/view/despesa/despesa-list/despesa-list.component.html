@@ -127,7 +127,7 @@
   <ng-template pTemplate="footer" let-columns>
     <tr>
       <td [attr.colspan]="columns.length-1" style='text-align: right;'>Total:</td>
-      <td style="text-align: right;">{{totalValor | number : '1.2-2' }}</td>
+      <td style="text-align: right;">{{totalValor | currency:'BRL'}}</td>
     </tr>
   </ng-template>
 </p-table>

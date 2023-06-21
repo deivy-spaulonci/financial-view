@@ -40,40 +40,68 @@ export class FornecedorFormComponent implements OnInit{
     this.loading = true;
     const cnpj = this.fornecedorform.controls['inputCNPJ'].value.replace(/[^0-9]+/g, '');
 
-    this.defaultService.get('fornecedor/consultacnpj?cnpj=' + cnpj).subscribe(resultado => {
-      if(resultado){
-        this.fornecedorform.controls['inputNome'].setValue(this.util.capitalize((resultado.fantasia ? resultado.fantasia : resultado.nome)));
-        this.fornecedorform.controls['inputRazaoSocial'].setValue(this.util.capitalize(resultado.nome));
-        this.fornecedorform.controls['comboCidade'].setValue(this.util.capitalize(resultado.municipio));
-        this.defaultService.get('cidade/' + this.util.capitalize(resultado.municipio)).subscribe(retornocidades => {
-          this.filteredCidades = retornocidades;
-          this.fornecedorform.controls['comboCidade'].setValue(this.filteredCidades[0])
-        });
-      }else{
-        this.messageService.add({severity: 'error', summary: 'Erro', detail: 'CNPJ consultado não retornou vazio!'});
-      }
-      this.loading = false;
-    });
+    this.defaultService.get('fornecedor/consultacnpj?cnpj=' + cnpj)
+      .subscribe({
+          next: resultado => {
+
+            if(resultado && resultado.status!='ERROR'){
+              this.fornecedorform.controls['inputNome'].setValue(this.util.capitalize((resultado.fantasia ? resultado.fantasia : resultado.nome)));
+              this.fornecedorform.controls['inputRazaoSocial'].setValue(this.util.capitalize(resultado.nome));
+              this.fornecedorform.controls['comboCidade'].setValue(this.util.capitalize(resultado.municipio));
+              this.defaultService.get('cidade/' + this.util.capitalize(resultado.municipio)).subscribe(retornocidades => {
+                this.filteredCidades = retornocidades;
+                this.fornecedorform.controls['comboCidade'].setValue(this.filteredCidades[0])
+              });
+            }else{
+              this.messageService.add({severity: 'error', summary: 'Erro', detail: resultado.messge});
+            }
+        },
+        error: error => {
+
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: error.messageerror});
+        },
+        complete: ()=>{ this.loading = false; }
+      });
   }
 
   filterCidades(event: AutoCompleteCompleteEvent) {
     let filtered: any[] = [];
     let query = event.query;
     this.loading = true;
-    this.defaultService.get('cidade/' + query).subscribe(retornocidades => {
-      this.filteredCidades = retornocidades;
-      this.loading = false;
-    });
+    this.defaultService.get('cidade/' + query)
+      .subscribe({
+        next: retornocidades => {
+          this.filteredCidades = retornocidades;
+        },
+        error: error => {
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: error.messageerror});
+        },
+        complete: ()=>{ this.loading = false; }
+      });
   }
   onSubmit(value: string) {
     this.loading = true;
     this.fornecedorCadastro.nome = this.fornecedorform.controls['inputNome'].value;
     this.fornecedorCadastro.razaoSocial = this.fornecedorform.controls['inputRazaoSocial'].value;
     this.fornecedorCadastro.cidade = this.fornecedorform.controls['comboCidade'].value;
+    this.fornecedorCadastro.cnpj = this.fornecedorform.controls['inputCNPJ'].value.replace(/\D/g, "");
 
-    this.defaultService.save(this.fornecedorCadastro, 'fornecedor').subscribe(resultado =>{
-      this.loading = false;
-      this.messageService.add({severity: 'info', summary: 'Sucesso', detail: 'Fornecedor salva com sucesso'});
-    });
+    this.defaultService.save(this.fornecedorCadastro, 'fornecedor')
+      .subscribe({
+        next: resultado => {
+          this.messageService.add({severity: 'info', summary: 'Sucesso', detail: 'Fornecedor salva com sucesso'});
+        },
+        error: error => {
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: error.message});
+          this.loading = false;
+        },
+        complete: () => {
+          this.fornecedorform.reset();
+          this.fornecedorCadastro = new Fornecedor();
+          this.fornecedorCadastro.cidade = new Cidade();
+
+          this.loading = false;
+        }
+      });
   }
 }
