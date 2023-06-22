@@ -15,7 +15,8 @@
         </p-dropdown>
       </div>
       <div>Fornecedor: </div>
-      <div><p-autoComplete [suggestions]="fornecedores"
+      <div>
+        <p-autoComplete [suggestions]="fornecedores"
                         (completeMethod)="filterFornecedor($event)"
                         formControlName="autoCompleteFornecedor"
                         field="nome"

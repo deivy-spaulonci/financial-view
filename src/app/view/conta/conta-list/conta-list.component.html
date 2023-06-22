@@ -1,1 +1,172 @@
-<p>conta-list works!</p>
+<p-toast [style]="{marginTop: '80px'}" position="top-center"></p-toast>
+
+<p-table #dt
+         [value]="contas"
+         [loading]="loading"
+         [lazy]="true"
+         [columns]="cols"
+         (onLazyLoad)="loadData($event)"
+         [rowsPerPageOptions]="[10,15,20,25,30,40]"
+         [alwaysShowPaginator]="true"
+         [paginator]="true"
+         [showCurrentPageReport]="true"
+         [totalRecords]="totalElements"
+         [rows]="pageSize"
+         [sortOrder]="-1"
+         sortField="vencimento"
+         currentPageReportTemplate="Mostrando {first} a {last} de {{totalElements}} despesas"
+         dataKey="id"
+         [style]="{'width': '100%'}"
+         styleClass="p-datatable-striped p-datatable-gridlines"
+         [contextMenu]="cm"
+         (onEditComplete)="dt._filter()"
+         [(contextMenuSelection)]="contaSelecionada">
+  <ng-template pTemplate="caption">
+    Vencimento de:<p-calendar [readonlyInput]="true" dateFormat="dd/mm/yy" [showIcon]="true" [showButtonBar]="true"
+                           [style]="{'width': '110px'}"
+                           (onSelect)="dt.filter($event.toISOString(), 'vencimentoInicial', 'exact')"
+                           (onClearClick)="dt.filter(null, 'vencimentoInicial', 'exact')">
+  </p-calendar>
+    até: <p-calendar [readonlyInput]="true" dateFormat="dd/mm/yy" [showIcon]="true" [showButtonBar]="true"
+                     [style]="{'width': '110px'}"
+                     (onSelect)="dt.filter($event.toISOString(), 'vencimentoFinal', 'exact')"
+                     (onClearClick)="dt.filter(null, 'vencimentoFinal', 'exact')">
+  </p-calendar>
+  </ng-template>
+  <ng-template pTemplate="header" let-cols>
+    <tr>
+      <th style="width: 5rem"></th>
+      <th *ngFor="let col of cols" [pSortableColumn]="col.field"
+          [ngStyle]="{'width': col.width, 'text-align': 'center'}">
+
+        <!--        filtro id-->
+        <p-columnFilter type="text" [field]="col.field" display="menu" style="float: left"
+                        [showMatchModes]="false" [showOperator]="false" [showAddButton]="false" pKeyFilter="int"
+                        [useGrouping]="true" *ngIf="col.field == 'id'">
+        </p-columnFilter>
+        <!--filtro tipo conta-->
+        <p-columnFilter [field]="col.field" display="menu" [showMatchModes]="false" style="float: left"
+                        [showOperator]="false" [showAddButton]="false"
+                        *ngIf="['tipoConta'].includes(col.field)"
+                        [showApplyButton]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-dropdown [options]="tiposConta" placeholder="todos" optionLabel="nome" [filter]="true"
+                        (onChange)="filter($event.value)" ></p-dropdown>
+          </ng-template>
+        </p-columnFilter>
+
+        <!--filtro data-->
+        <p-columnFilter [field]="col.field" display="menu" *ngIf="['vencimento','emissao'].includes(col.field)"
+                        style="float: left" type="date" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false">
+          <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+            <p-calendar [readonlyInput]="true" dateFormat="dd/mm/yy" (onSelect)="filter($event.toISOString())"></p-calendar>
+          </ng-template>
+        </p-columnFilter>
+
+
+        {{col.header}}
+        <p-sortIcon [field]="col.field" style="float: right" *ngIf="!['valor','status','parcela'].includes(col.field)">
+        </p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-conta let-ri="rowIndex" let-editing="editing" let-expanded="expanded">
+    <tr pTooltip="{{conta.obs}}" tooltipPosition="top" [pContextMenuRow]="conta">
+      <td>
+        <button type="button" pButton pRipple [pRowToggler]="conta" style="height: 15px;"
+                class="p-button-text p-button-rounded p-button-plain p-button-sm"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+        </button>
+      </td>
+      <td style="text-align: center;">{{conta.id}}</td>
+      <td>{{conta.tipoConta.nome}}</td>
+      <td style="text-align: center;">
+        {{conta.emissao | date: 'dd/MM/yyyy'}}
+      </td>
+      <td style="color: steelblue; font-weight: bolder; text-align: center;">
+        {{conta.vencimento | date: 'dd/MM/yyyy'}}
+      </td>
+      <td style="text-align: center;">
+        {{conta.parcela + '/' + conta.totalParcela }}
+      </td>
+      <td style="text-align: right;">
+        {{conta.valor | currency: 'BRL'}}
+      </td>
+      <td style="padding: 0;" [ngSwitch]="conta.intStatus">
+        <p-message *ngSwitchCase="-1"  severity="error" text="{{conta.status}}" [style]="{'width': '100%'}"></p-message>
+        <p-message *ngSwitchCase="2"  severity="success" text="{{conta.status}}" [style]="{'width': '100%'}"></p-message>
+        <p-message *ngSwitchCase="0"  severity="warn" text="{{conta.status}}" [style]="{'width': '100%'}"></p-message>
+        <p-message *ngSwitchCase="1"  severity="info" text="{{conta.status}}" [style]="{'width': '100%'}"></p-message>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-conta>
+    <tr class="bg-blue-50">
+      <td colspan="8">
+        <div class="grid grid-nogutter">
+          <div class="col-1">
+            <div class="m-0 p-1">Cód. Barra:</div>
+          </div>
+          <div class="col-4">
+            <div class="m-0 p-1 font-bold">{{conta.codigoBarra}}</div>
+          </div>
+          <div class="col-1">
+            <div class="m-0 p-1">Número:</div>
+          </div>
+          <div class="col-6">
+            <div class="m-0 p-1 font-bold">{{conta.numero}}</div>
+          </div>
+
+          <div class="col-1" *ngIf="conta.dataPagamento">
+            <div class="m-0 p-1">Data Pgto:</div>
+          </div>
+          <div class="col-1" *ngIf="conta.dataPagamento">
+            <div class="m-0 p-1 font-bold">{{conta.dataPagamento | date: 'dd/MM/yyyy'}}</div>
+          </div>
+          <div class="col-1" *ngIf="conta.formaPagamento">
+            <div class="m-0 p-1">Forma Pgto:</div>
+          </div>
+          <div class="col-3" *ngIf="conta.formaPagamento">
+            <div class="m-0 p-1 font-bold">{{conta.formaPagamento.nome}}</div>
+          </div>
+          <div class="col-1" *ngIf="conta.valorPago">
+            <div class="m-0 p-1">Valor Pago:</div>
+          </div>
+          <div class="col-1" *ngIf="conta.valorPago">
+            <div class="m-0 p-1 font-bold">{{conta.valorPago | currency: 'BRL'}}</div>
+          </div>
+          <div class="col-1" *ngIf="conta.obs">
+            <div class="m-0 p-1">Obs:</div>
+          </div>
+          <div class="col" *ngIf="conta.obs">
+            <div class="m-0 p-1 font-bold">{{conta.obs}}</div>
+          </div>
+        </div>
+
+        <p-table *ngIf="conta.lancamentoContaCartao.length>0"  [value]="conta.lancamentoContaCartao" [scrollable]="true" scrollHeight="400px">
+          <ng-template pTemplate="header">
+            <tr><th>Fornecedor</th><th>Data</th><th>Valor</th><th>Parcelas</th></tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-lcc>
+            <tr>
+              <td>{{ lcc.fornecedor.nome }}</td>
+              <td class="text-center">{{ lcc.data | date:'dd/MM/yyyy' }}</td>
+              <td class="text-right">{{ lcc.valor | currency: 'BRL' }}</td>
+              <td class="text-center">{{ lcc.parcela +'/'+lcc.totalParcela }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="footer" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length" style='text-align: right;'>Total:</td>
+      <td style="text-align: right;">{{totalValor | currency:'BRL'}}</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-contextMenu #cm [model]="items"></p-contextMenu>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

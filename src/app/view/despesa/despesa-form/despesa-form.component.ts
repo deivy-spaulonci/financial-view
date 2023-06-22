@@ -38,7 +38,8 @@ export class DespesaFormComponent implements OnInit{
       comboFormaPagamento: new FormControl(),
       inputObservacao: new FormControl(),
       inputData: new FormControl('', Validators.required),
-      inputValor: new FormControl('', Validators.required)
+      inputValor: new FormControl('', Validators.required),
+      inputValorPgto: new FormControl()
     });
     this.despesaCadastro.tipoDespesa = this.despesaform.controls['comboTipoDespesa'].value;
     this.despesaCadastro.formaPagamento = this.despesaform.controls['comboFormaPagamento'].value;

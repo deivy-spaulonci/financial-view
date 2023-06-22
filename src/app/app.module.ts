@@ -31,6 +31,7 @@ import { MessagesModule } from 'primeng/messages';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { DividerModule } from 'primeng/divider';
 
 import {HttpClientModule} from "@angular/common/http";
 import { DespesaFormComponent } from './view/despesa/despesa-form/despesa-form.component';
@@ -96,7 +97,8 @@ registerLocaleData(localept, 'pt');
     FormsModule,
     OverlayPanelModule,
     DialogModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    DividerModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt' },

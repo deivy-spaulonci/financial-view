@@ -1,5 +1,15 @@
 <p-panel header="Conta">
   <p-progressBar *ngIf="loading" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
-  <app-conta-form></app-conta-form>
-  <app-conta-list></app-conta-list>
+  <p-tabView>
+    <p-tabPanel header="Consulta">
+      <app-conta-list [tiposConta]="tiposConta"
+                      (editConta)="editarConta($event)">
+      </app-conta-list>
+    </p-tabPanel>
+    <p-tabPanel header="Cadastro">
+      <app-conta-form [formasPagamento]="formasPagamento"
+                      [tiposConta]="tiposConta">
+      </app-conta-form>
+    </p-tabPanel>
+  </p-tabView>
 </p-panel>
