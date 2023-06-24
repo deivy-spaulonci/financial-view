@@ -13,7 +13,7 @@
          [totalRecords]="totalElements"
          [rows]="pageSize"
          [sortOrder]="-1"
-         sortField="data"
+         [sortField]="sortField"
          currentPageReportTemplate="Mostrando {first} a {last} de {{totalElements}} despesas"
          dataKey="id"
          [style]="{'width': '1050px'}"
@@ -30,6 +30,11 @@
                 [style]="{'width': '110px'}" (onSelect)="dt.filter($event.toISOString(), 'fim', 'exact')"
                 (onClear)="dt.reset()">
       </p-calendar>
+
+    <p-button label="Filtrar" styleClass="p-button-text " icon="pi pi-filter" iconPos="right"
+              [style]="{'float':'right'}" (onClick)="filtroDespesaVisible =true">
+    </p-button>
+
   </ng-template>
   <ng-template pTemplate="header" let-cols>
     <tr>
@@ -131,9 +136,51 @@
     </tr>
   </ng-template>
 </p-table>
-
 <p-contextMenu #cm [model]="items"></p-contextMenu>
 
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 
+<p-sidebar [(visible)]="filtroDespesaVisible" position="right" styleClass="w-30rem">
+  <ng-template pTemplate="header">
+    Filtros Depesea
+  </ng-template>
+  <ng-template pTemplate="body">
+    <div class="grid p-2">
+      <div class="col-12"><label>id:</label></div>
+      <div class="col-12">
+        <input type="text" pInputText [(ngModel)]="filtro.id"/>
+      </div>
+      <div class="col-12"><label>Tipo Despesa:</label></div>
+      <div class="col-12">
+        <p-dropdown [options]="tiposDespesa" placeholder="todos" optionLabel="nome" [filter]="true"
+                    [style]="{'width':'100%'}" [(ngModel)]="filtro.tipoDespesa"></p-dropdown>
+      </div>
+      <div class="col-12"><label>Fornecedor:</label></div>
+      <div class="col-12">
+        <app-acfornecedor largInput="100%" (emmitModel)="filtro.fornecedor = $event"></app-acfornecedor>
+      </div>
+      <div class="col-12"><label>Período:</label></div>
+
+      <div class="col-5">
+        <p-inputMask mask="99/99/9999" placeholder="99/99/9999" slotChar="dd/mm/yyyy"
+                     [style]="{'width':'100%'}" [(ngModel)]="filtro.inicio"></p-inputMask>
+      </div>
+      <div class="col-1 m-1">até:</div>
+      <div class="col-5">
+        <p-inputMask mask="99/99/9999" placeholder="99/99/9999" slotChar="dd/mm/yyyy"
+                     [style]="{'width':'100%'}" [(ngModel)]="filtro.fim"></p-inputMask>
+      </div>
+
+      <div class="col-12"><label>Forma Pagamento:</label></div>
+      <div class="col-12">
+        <p-dropdown [options]="formasPagamento" placeholder="todos" optionLabel="nome" [filter]="true"
+                    [style]="{'width':'100%'}" [(ngModel)]="filtro.formaPagamento"></p-dropdown>
+      </div>
+
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <p-button type="Button" label="Filtrar" icon="pi pi-filter" [style]="{'width': '100%'}" (onClick)="filtrarDespesa()"></p-button>
+  </ng-template>
+</p-sidebar>
 

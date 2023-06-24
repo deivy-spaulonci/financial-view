@@ -18,7 +18,6 @@ export class DespesaListComponent implements OnInit {
   @Input() tiposDespesa:TipoDespesa[]= [];
   @Input() fornecedores:Fornecedor[]= [];
   @Input() formasPagamento:FormaPagamento[]= [];
-
   @ViewChild('dt') table?:Table;
 
   despesas:Despesa[] = [];
@@ -31,7 +30,10 @@ export class DespesaListComponent implements OnInit {
   pageNumber = 0;
   pageSize = 20;
   totalElements = 0;
+  sortField:string='data'
   util: Util = new Util();
+  filtroDespesaVisible: boolean=false;
+  filtro:any={};
 
   constructor(private defaultService: DefaultService,
               private messageService: MessageService,
@@ -48,8 +50,6 @@ export class DespesaListComponent implements OnInit {
       {field: 'valor', header: 'Valor', width: '120px'}
     ];
     this.items = [
-      // {label: 'Visualizar', icon: 'pi pi-fw pi-search',
-      //   command: () => this.detalharDespesa = true},
       {label: 'Excluir', icon: 'pi pi-fw pi-times',
         command: () => this.excluirDespesa() },
       // {label: 'Editar', icon: 'pi pi-fw pi-pencil',
@@ -59,6 +59,14 @@ export class DespesaListComponent implements OnInit {
 
   refresTable(){
     this.table?._filter();
+  }
+
+  filterFornecedor(event: any) {
+    let query = event.query;
+    this.defaultService.get('fornecedor/search/'+event.query)
+      .subscribe(resultado => {
+        this.fornecedores = resultado;
+      });
   }
 
   loadData(event: TableLazyLoadEvent) {
@@ -91,8 +99,14 @@ export class DespesaListComponent implements OnInit {
       }
     }
 
+    // alert(JSON.stringify(event.sortField))
+
     event.rows = (event.rows ? event.rows : this.pageSize);
+
     event.sortField = (event.sortField ? event.sortField : 'data');
+
+
+
     if (event.first)
       this.pageNumber = (event.first + event.rows) / event.rows - 1;
 
@@ -138,6 +152,31 @@ export class DespesaListComponent implements OnInit {
     const element = ( $event.target as HTMLInputElement);
     element.value = this.util.formatFloatToReal(element.value);
     despesa.valor = this.util.formatMoedaToFloat(this.util.formatFloatToReal(element.value));
+  }
+
+  filtrarDespesa() {
+
+    let urlfiltros: string = '';
+    urlfiltros += this.filtro.id ? '&id=' + this.filtro.id : '';
+    urlfiltros += this.filtro.tipoDespesa ? '&tipoDespesa=' + this.filtro.tipoDespesa.value : '';
+    urlfiltros += this.filtro.fornecedor ? '&fornecedor.id=' + this.filtro.fornecedor.id : '';
+    urlfiltros += this.filtro.inicio ? '&icinio=' + this.filtro.inicio : '';
+    urlfiltros += this.filtro.fim ? '&fim=' + this.filtro.fim : '';
+    urlfiltros += this.filtro.formaPagamento ? '&formaPagamento=' + this.filtro.formaPagamento.value : '';
+
+    this.pageSize = (this.table?.rows ? this.table.rows : this.pageSize);
+    this.sortField = (this.table?.sortField ? this.table.sortField : 'data');
+
+    if (this.table?.first)
+      this.pageNumber = (this.table?.first + this.pageSize) / this.pageSize - 1;
+
+    const url: string = 'despesa/page?page=' + this.pageNumber
+      + '&size=' + this.pageSize
+      + '&sort=' + this.sortField + ',' + (this.table?.sortOrder == 1 ? 'asc' : 'desc')
+      + urlfiltros;
+
+    alert(url+urlfiltros)
+
   }
 }
 

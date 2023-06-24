@@ -1,3 +1,23 @@
-<p-tabMenu [model]="items"></p-tabMenu>
+<!--&lt;!&ndash;  <p-tabMenu [model]="items"></p-tabMenu>&ndash;&gt;-->
+
+<p-toolbar styleClass="bg-blue-100 border-left-blue-700 text-blue-700"
+           [style]="{'font-style': 'italic','font-weight': 'bold','border-left':'6px solid'}">
+  <div class="p-toolbar-group-start">
+    {{title}}
+  </div>
+  <div class="p-toolbar-group-end">
+    <p-button (click)="menuVisible = true"
+              icon="pi pi-bars"
+              styleClass="p-button-text"></p-button>
+  </div>
+</p-toolbar>
+
 <router-outlet></router-outlet>
 
+<p-sidebar [(visible)]="menuVisible" position="right"  styleClass="w-30rem">
+  <ng-template pTemplate="header">Menu</ng-template>
+  <p-tree [value]="nodes"
+          (onNodeSelect)="nodeSelect($event)"
+          selectionMode="single"
+          styleClass="w-full md:w-30rem border-none"></p-tree>
+</p-sidebar>

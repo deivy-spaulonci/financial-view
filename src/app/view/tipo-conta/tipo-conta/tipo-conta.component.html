@@ -1,0 +1,68 @@
+<p-toolbar>
+  <div class="p-toolbar-group-start font-bold">Tipo Conta</div>
+</p-toolbar>
+
+  <div class="grid m-2">
+    <div class="col-1  w-min">
+      <div class="m-0 p-1">Nome:</div>
+    </div>
+    <div class="col-3">
+      <input type="text"
+             pInputText [(ngModel)]="tipoContaCadastro.nome"
+             style="width: 100%"/>
+    </div>
+    <div class="col-2">
+      <div class="m-0 p-1">
+        <div class="flex align-items-center gap-1">
+          <p-checkbox [(ngModel)]="tipoContaCadastro.contaCartao"
+                      inputId="contacarao" [binary]="true"></p-checkbox>
+          <label for="contacarao">Conta Cartão</label>
+        </div>
+      </div>
+    </div>
+    <div class="col-1">
+      <p-button label="Salvar" icon="pi pi-save"
+      (onClick)="cadastrar()"></p-button>
+    </div>
+  </div>
+
+  <p-table #dt
+         [value]="tipos"
+         [columns]="cols"
+         [style]="{'width': '600px','margin':'0px'}"
+         [scrollable]="true"
+         scrollHeight="650px"
+         styleClass="p-datatable-striped p-datatable-gridlines">
+    <ng-template pTemplate="header" let-cols>
+      <tr>
+        <th *ngFor="let col of cols" [pSortableColumn]="col.field"
+            [ngStyle]="{'width': col.width, 'text-align': 'center'}">
+          {{col.header}}
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-tipoConta>
+      <tr>
+        <td>{{tipoConta.id}}</td>
+        <td>
+    <span *ngIf="['CANCELADO','FINALIZADO'].includes(tipoConta.tipoContaStatus.value); else elseBlock"
+          style="text-decoration:line-through">
+      {{tipoConta.nome}}
+    </span>
+          <ng-template #elseBlock>{{tipoConta.nome}}</ng-template>
+        </td>
+        <td class="text-center">
+          <i class="pi pi-credit-card" *ngIf="tipoConta.contaCartao"></i>
+        </td>
+        <td class="text-center" style="padding: 0;" [ngSwitch]="tipoConta.tipoContaStatus.value">
+          <p-message *ngSwitchCase="'CANCELADO'"  severity="error" text="{{tipoConta.tipoContaStatus.nome}}" [style]="{'width': '100%'}"></p-message>
+          <p-message *ngSwitchCase="'FINALIZADO'"  severity="warn" text="{{tipoConta.tipoContaStatus.nome}}" [style]="{'width': '100%'}"></p-message>
+          <p-message *ngSwitchCase="'ATIVO'"  severity="success" text="{{tipoConta.tipoContaStatus.nome}}" [style]="{'width': '100%'}"></p-message>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+<p-toast [style]="{marginTop: '80px'}" position="top-center"></p-toast>
+
+<app-loading [loading]="loading"></app-loading>

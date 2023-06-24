@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Util} from "../../../util/util";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Conta} from "../../../model/conta";
@@ -20,6 +20,7 @@ export class ContaFormComponent implements OnInit{
   @Input() tiposConta:TipoConta[]= [];
   @Input() formasPagamento:FormaPagamento[]= [];
   @Input() loading?:boolean;
+  @Output() refTable: EventEmitter<void> = new EventEmitter();
 
   fornecedores:Fornecedor[]= [];
   util: Util = new Util();
@@ -57,6 +58,37 @@ export class ContaFormComponent implements OnInit{
     this.contaCadastro.lancamentoContaCartao=[];
   }
 
+  editarConta(id:Number){
+    this.loading = true;
+    this.defaultService.get('conta/'+id)
+      .subscribe({
+        next: resp =>{
+          this.contaCadastro = resp;
+          this.contaform.controls['inputCodigoBarras'].setValue(this.contaCadastro.codigoBarra);
+          this.contaform.controls['inputNumero'].setValue(this.contaCadastro.numero);
+          this.contaform.controls['comboTipoConta'].setValue(this.contaCadastro.tipoConta);
+          this.contaform.controls['inputVencimento'].setValue(this.util.dateToDataBR(this.contaCadastro.vencimento));
+          this.contaform.controls['inputEmissao'].setValue(this.util.dateToDataBR(this.contaCadastro.emissao));
+          this.contaform.controls['inputParcela'].setValue(this.contaCadastro.parcela);
+          this.contaform.controls['inputTotalParcela'].setValue(this.contaCadastro.totalParcela);
+          this.contaform.controls['inputValor'].setValue(this.util.formatFloatToReal(this.contaCadastro.valor.toString()));
+          if(this.contaCadastro.formaPagamento)
+            this.contaform.controls['comboFormaPagamento'].setValue(this.contaCadastro.formaPagamento);
+          if(this.contaCadastro.dataPagamento)
+            this.contaform.controls['inputDataPgto'].setValue(this.util.dateToDataBR(this.contaCadastro.dataPagamento));
+          if(this.contaCadastro.valorPago)
+            this.contaform.controls['inputValorPgto'].setValue(this.util.formatFloatToReal(this.contaCadastro.valorPago.toString()));
+        },
+        error: error =>{
+          this.loading = false;
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: error.message});
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      })
+  }
+
   onSubmit(value:string) {
     this.loading = true;
     this.contaCadastro.codigoBarra = this.contaform.controls['inputCodigoBarras'].value.replace(/[^0-9]+/g, '');
@@ -90,21 +122,22 @@ export class ContaFormComponent implements OnInit{
     }
 
     this.defaultService.save(this.contaCadastro, 'conta').
-    subscribe({
-      next: resultado =>{
-        this.messageService.add({severity: 'info', summary: 'Sucesso', detail: 'Conta salva com sucesso'});
-      },
-      error: error =>{
-        this.loading = false;
-        this.messageService.add({severity: 'error', summary: 'Erro', detail: error.message});
-      },
-      complete: () => {
-        this.contaCadastro = new Conta();
-        this.contaCadastro.lancamentoContaCartao = [];
-        this.contaform.reset();
-        this.loading = false;
-      }
-    })
+      subscribe({
+        next: res =>{
+          this.messageService.add({severity: 'info', summary: 'Sucesso', detail: 'Conta salva com sucesso'});
+        },
+        error: error =>{
+          this.loading = false;
+          this.messageService.add({severity: 'error', summary: 'Erro', detail: error.message});
+        },
+        complete: () => {
+          this.contaCadastro = new Conta();
+          this.contaCadastro.lancamentoContaCartao = [];
+          this.contaform.reset();
+          this.loading = false;
+          this.refTable.emit();
+        }
+      });
   }
 
   addLcc(event:any){

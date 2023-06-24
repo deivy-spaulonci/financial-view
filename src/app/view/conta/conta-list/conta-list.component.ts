@@ -1,11 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormaPagamento} from "../../../model/forma-pagamento";
 import {ConfirmationService, MenuItem, MessageService} from "primeng/api";
 import {TipoConta} from "../../../model/tipo-conta";
 import {DefaultService} from "../../../service/default.service";
-import {TableLazyLoadEvent} from "primeng/table";
+import {Table, TableLazyLoadEvent} from "primeng/table";
 import {Util} from "../../../util/util";
-import {Despesa} from "../../../model/despesa";
 import {Conta} from "../../../model/conta";
 
 @Component({
@@ -18,6 +17,7 @@ export class ContaListComponent implements OnInit{
   @Input() tiposConta:TipoConta[]= [];
   @Input() formasPagamento:FormaPagamento[]= [];
   @Output() editConta: EventEmitter<Number> = new EventEmitter();
+  @ViewChild('dt') dt?:Table;
 
   contas:Conta[] = [];
   contaSelecionada!:Conta;
@@ -88,10 +88,8 @@ export class ContaListComponent implements OnInit{
 
     event.rows = (event.rows ? event.rows : this.pageSize);
     event.sortField = (event.sortField ? event.sortField : 'vencimento');
-    if (event.first)
-      this.pageNumber = (event.first + event.rows) / event.rows - 1;
 
-    const url: string = 'conta/page?page=' + this.pageNumber
+    const url: string = 'conta/page?page=' + ((event.first && event.rows) ? (event.first / event.rows) : 0)
       + '&size=' + event.rows
       + '&sort=' + event.sortField + ',' + (event.sortOrder == 1 ? 'asc' : 'desc')
       + urlfiltros;
@@ -107,16 +105,25 @@ export class ContaListComponent implements OnInit{
     });
   }
   excluirConta(){
+    this.loading=true;
     this.confirmationService.confirm({
       message: 'Deseja realmente excluir essa conta?',
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.defaultService.delete(this.contaSelecionada, 'conta')
-          .subscribe(resultado =>{
-            this.contas = this.contas.filter(val => val.id !== this.contaSelecionada.id);
-            this.messageService.add({severity:'success', summary: 'Sucesso', detail: 'Conta excluída'});
-          });
+        this.defaultService.delete(this.contaSelecionada.id, 'conta')
+          .subscribe({
+            next: res => {
+              this.messageService.add({severity: 'success', summary: 'Sucesso', detail: 'Conta excluída'});
+              this.dt?._filter();
+              this.loading=false;
+
+            },
+            error: error =>{
+              this.loading = false;
+              this.messageService.add({severity: 'error', summary: 'Erro', detail: error.message});
+            },
+          })
       }
     });
   }

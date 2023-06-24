@@ -1,7 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormaPagamento} from "../../model/forma-pagamento";
 import {TipoConta} from "../../model/tipo-conta";
 import {DefaultService} from "../../service/default.service";
+import {ContaFormComponent} from "./conta-form/conta-form.component";
+import {ContaListComponent} from "./conta-list/conta-list.component";
 
 @Component({
   selector: 'app-conta',
@@ -11,8 +13,11 @@ import {DefaultService} from "../../service/default.service";
 export class ContaComponent implements OnInit{
   tiposConta:TipoConta[] = [];
   formasPagamento:FormaPagamento[]=[];
+  @ViewChild('formConta') form?:ContaFormComponent;
+  @ViewChild('listConta') list?:ContaListComponent;
 
   loading:boolean = false;
+  activeIndex: number = 0;
 
   constructor(private defaultService: DefaultService) {
   }
@@ -28,7 +33,13 @@ export class ContaComponent implements OnInit{
     });
   }
 
+  refresTable(){
+    this.activeIndex=0;
+    this.list?.dt?._filter();
+  }
+
   editarConta($event: Number) {
-   alert($event)
+    this.activeIndex=1;
+    this.form?.editarConta($event);
   }
 }

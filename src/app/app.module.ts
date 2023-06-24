@@ -32,6 +32,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DividerModule } from 'primeng/divider';
+import { TreeModule } from 'primeng/tree';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import {HttpClientModule} from "@angular/common/http";
 import { DespesaFormComponent } from './view/despesa/despesa-form/despesa-form.component';
@@ -48,6 +51,8 @@ import { CnpjPipe } from './pipe/cnpj.pipe';
 import { ContaComponent } from './view/conta/conta.component';
 import { ContaListComponent } from './view/conta/conta-list/conta-list.component';
 import { ContaFormComponent } from './view/conta/conta-form/conta-form.component';
+import { TipoContaComponent } from './view/tipo-conta/tipo-conta/tipo-conta.component';
+import { AcfornecedorComponent } from './comp/acfornecedor/acfornecedor.component';
 
 registerLocaleData(localept, 'pt');
 
@@ -66,6 +71,9 @@ registerLocaleData(localept, 'pt');
     ContaComponent,
     ContaListComponent,
     ContaFormComponent,
+    TipoContaComponent,
+    AcfornecedorComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -98,7 +106,10 @@ registerLocaleData(localept, 'pt');
     OverlayPanelModule,
     DialogModule,
     ProgressSpinnerModule,
-    DividerModule
+    DividerModule,
+    TreeModule,
+    InputSwitchModule,
+    CheckboxModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt' },

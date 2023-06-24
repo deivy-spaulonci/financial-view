@@ -16,23 +16,24 @@
       </div>
       <div>Fornecedor: </div>
       <div>
-        <p-autoComplete [suggestions]="fornecedores"
-                        (completeMethod)="filterFornecedor($event)"
-                        formControlName="autoCompleteFornecedor"
-                        field="nome"
-                        [inputStyle]="{'width': '500px'}"
-                        [forceSelection]="true"
-                        scrollHeight="400px"
-                        [style]="{'width': '600px'}"
-                        [minLength]="1">
-          <ng-template let-value pTemplate="selectedItem">
-            <span>>{{value}}</span>
-          </ng-template>
-          <ng-template let-brand pTemplate="item">
-            <span style="font-size:12px;">{{brand.nome}}</span>
-            <span style="float: right;">{{brand.cidade.nome + ' - ' + brand.cidade.estado.value}}</span>
-          </ng-template>
-        </p-autoComplete>
+<!--        <p-autoComplete [suggestions]="fornecedores"-->
+<!--                        (completeMethod)="filterFornecedor($event)"-->
+<!--                        formControlName="autoCompleteFornecedor"-->
+<!--                        field="nome"-->
+<!--                        [inputStyle]="{'width': '500px'}"-->
+<!--                        [forceSelection]="true"-->
+<!--                        scrollHeight="400px"-->
+<!--                        [style]="{'width': '600px'}"-->
+<!--                        [minLength]="1">-->
+<!--          <ng-template let-value pTemplate="selectedItem">-->
+<!--            <span>>{{value}}</span>-->
+<!--          </ng-template>-->
+<!--          <ng-template let-brand pTemplate="item">-->
+<!--            <span style="font-size:12px;">{{brand.nome}}</span>-->
+<!--            <span style="float: right;">{{brand.cidade.nome + ' - ' + brand.cidade.estado.value}}</span>-->
+<!--          </ng-template>-->
+<!--        </p-autoComplete>-->
+        <app-acfornecedor largInput="500px" [control]="'autoCompleteFornecedor'" [groupName]="despesaform"></app-acfornecedor>
       </div>
     </div>
     <div>

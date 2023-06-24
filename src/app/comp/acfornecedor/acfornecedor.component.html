@@ -1,0 +1,39 @@
+<form [formGroup]="groupName" *ngIf="groupName else blockNoForm">
+  <p-autoComplete [suggestions]="fornecedores"
+                  (completeMethod)="filterFornecedor($event)"
+                  [formControlName]="control"
+                  [forceSelection]="true"
+                  [inputStyle]="{'width': largInput}"
+                  [style]="{'width': largInput}"
+                  [minLength]="1"
+                  field="nome"
+                  scrollHeight="400px">
+    <ng-template let-value pTemplate="selectedItem">
+      <span>>{{value}}</span>
+    </ng-template>
+    <ng-template let-brand pTemplate="item">
+      <span style="font-size:12px;">{{brand.nome}}</span>
+      <span style="float: right;">{{brand.cidade.nome + ' - ' + brand.cidade.estado.value}}</span>
+    </ng-template>
+  </p-autoComplete>
+</form>
+<ng-template #blockNoForm>
+  <p-autoComplete [suggestions]="fornecedores"
+                  (completeMethod)="filterFornecedor($event)"
+                  (onSelect)="changeModel($event)"
+                  [forceSelection]="true"
+                  [inputStyle]="{'width': largInput}"
+                  [style]="{'width': largInput}"
+                  [(ngModel)]="model"
+                  [minLength]="1"
+                  field="nome"
+                  scrollHeight="400px">
+    <ng-template let-value pTemplate="selectedItem">
+      <span>>{{value}}</span>
+    </ng-template>
+    <ng-template let-brand pTemplate="item">
+      <span style="font-size:12px;">{{brand.nome}}</span>
+      <span style="float: right;">{{brand.cidade.nome + ' - ' + brand.cidade.estado.value}}</span>
+    </ng-template>
+  </p-autoComplete>
+</ng-template>
