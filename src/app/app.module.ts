@@ -35,6 +35,7 @@ import { DividerModule } from 'primeng/divider';
 import { TreeModule } from 'primeng/tree';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { CheckboxModule } from 'primeng/checkbox';
+import {MenuModule} from "primeng/menu";
 
 import {HttpClientModule} from "@angular/common/http";
 import { DespesaFormComponent } from './view/despesa/despesa-form/despesa-form.component';
@@ -53,6 +54,7 @@ import { ContaListComponent } from './view/conta/conta-list/conta-list.component
 import { ContaFormComponent } from './view/conta/conta-form/conta-form.component';
 import { TipoContaComponent } from './view/tipo-conta/tipo-conta/tipo-conta.component';
 import { AcfornecedorComponent } from './comp/acfornecedor/acfornecedor.component';
+import { BtMainMenuComponent } from './comp/bt-main-menu/bt-main-menu.component';
 
 registerLocaleData(localept, 'pt');
 
@@ -73,6 +75,7 @@ registerLocaleData(localept, 'pt');
     ContaFormComponent,
     TipoContaComponent,
     AcfornecedorComponent,
+    BtMainMenuComponent,
 
   ],
   imports: [
@@ -109,7 +112,8 @@ registerLocaleData(localept, 'pt');
     DividerModule,
     TreeModule,
     InputSwitchModule,
-    CheckboxModule
+    CheckboxModule,
+    MenuModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt' },
